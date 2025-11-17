@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triangle Classification Tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.geogebra.org/apps/deployggb.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔺 Interactive Triangle Classification</h1>
+            <p>Measure the sides and drag triangles to the correct category!</p>
+        </header>
+
+        <div class="main-content">
+            <!-- GeoGebra Applet Container -->
+            <div class="geogebra-container">
+                <div id="ggbApplet"></div>
+                <div class="tools-panel">
+                    <button id="newTriangle" class="btn btn-primary">Generate New Triangle</button>
+                    <button id="toggleRuler" class="btn btn-secondary">Toggle Ruler</button>
+                    <button id="resetApplet" class="btn btn-danger">Reset</button>
+                </div>
+            </div>
+
+            <!-- Classification Boxes -->
+            <div class="classification-area">
+                <h2>Classification Boxes</h2>
+                <div class="classification-boxes">
+                    <div class="drop-box equilateral" data-type="equilateral">
+                        <div class="box-header">
+                            <h3>Equilateral</h3>
+                            <span class="info-icon" title="All sides equal">ℹ️</span>
+                        </div>
+                        <div class="box-description">All sides equal</div>
+                        <div class="drop-zone"></div>
+                        <div class="examples">Example: 5, 5, 5</div>
+                    </div>
+
+                    <div class="drop-box isosceles" data-type="isosceles">
+                        <div class="box-header">
+                            <h3>Isosceles</h3>
+                            <span class="info-icon" title="Two sides equal">ℹ️</span>
+                        </div>
+                        <div class="box-description">Two sides equal</div>
+                        <div class="drop-zone"></div>
+                        <div class="examples">Example: 5, 5, 3</div>
+                    </div>
+
+                    <div class="drop-box scalene" data-type="scalene">
+                        <div class="box-header">
+                            <h3>Scalene</h3>
+                            <span class="info-icon" title="All sides different">ℹ️</span>
+                        </div>
+                        <div class="box-description">All sides different</div>
+                        <div class="drop-zone"></div>
+                        <div class="examples">Example: 3, 4, 5</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Measurement Panel -->
+        <div class="measurement-panel">
+            <h3>Triangle Measurements</h3>
+            <div class="measurements">
+                <div class="measurement-item">
+                    <label>Side A:</label>
+                    <span id="sideA">-</span>
+                </div>
+                <div class="measurement-item">
+                    <label>Side B:</label>
+                    <span id="sideB">-</span>
+                </div>
+                <div class="measurement-item">
+                    <label>Side C:</label>
+                    <span id="sideC">-</span>
+                </div>
+                <div class="classification-result">
+                    <label>Classification:</label>
+                    <span id="classification">Click on triangle to measure</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Score and Feedback Panel -->
+        <div class="feedback-panel">
+            <div class="score-display">
+                <h3>Score: <span id="score">0</span></h3>
+                <div class="attempts">Attempts: <span id="attempts">0</span></div>
+            </div>
+            <div class="feedback-message" id="feedbackMessage"></div>
+            <div class="hint-section">
+                <button id="showHint" class="btn btn-info">Show Hint</button>
+                <div id="hintMessage" class="hint-message"></div>
+            </div>
+        </div>
+
+        <!-- Instructions Panel -->
+        <div class="instructions">
+            <h3>How to Play:</h3>
+            <ol>
+                <li>Click "Generate New Triangle" to create a triangle</li>
+                <li>Use the ruler tool to measure the sides</li>
+                <li>Drag the triangle to the correct classification box</li>
+                <li>Get instant feedback on your classification!</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="triangle-classifier.js"></script>
+</body>
+</html>
