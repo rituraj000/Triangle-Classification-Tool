@@ -15,6 +15,8 @@ class TriangleClassifier {
     }
 
     initializeGeoGebra() {
+        console.log('Initializing GeoGebra...');
+        
         const parameters = {
             "appName": "geometry",
             "width": 600,
@@ -29,7 +31,8 @@ class TriangleClassifier {
             "showToolBarHelp": false,
             "errorDialogsActive": false,
             "useBrowserForJS": true,
-            "borderColor": "#e0e0e0"
+            "borderColor": "#e0e0e0",
+            "language": "en"
         };
 
         const applet = new GGBApplet(parameters, true);
@@ -38,6 +41,8 @@ class TriangleClassifier {
         applet.setHTML5Codebase('https://www.geogebra.org/apps/latest/web3d/');
         
         window.ggbOnInit = () => {
+            console.log('GeoGebra initialized successfully!');
+            
             // Remove loading message
             const loadingMessage = document.getElementById('loading-message');
             if (loadingMessage) {
@@ -45,42 +50,81 @@ class TriangleClassifier {
             }
             
             this.ggbApp = window.ggbApplet;
-            this.setupGeoGebraEnvironment();
-            this.createInitialTriangle();
+            
+            // Add a small delay to ensure GeoGebra is fully ready
+            setTimeout(() => {
+                try {
+                    this.setupGeoGebraEnvironment();
+                    this.createInitialTriangle();
+                    console.log('Triangle classification tool ready!');
+                } catch (error) {
+                    console.error('Error setting up GeoGebra environment:', error);
+                    this.showGeoGebraError();
+                }
+            }, 1000);
         };
         
-        applet.inject('ggbApplet');
+        try {
+            applet.inject('ggbApplet');
+        } catch (error) {
+            console.error('Failed to inject GeoGebra applet:', error);
+            this.showGeoGebraError();
+        }
         
         // Add timeout for GeoGebra loading
         setTimeout(() => {
             const loadingMessage = document.getElementById('loading-message');
             if (loadingMessage && loadingMessage.style.display !== 'none') {
-                loadingMessage.innerHTML = `
-                    <p style="color: #dc3545; font-weight: bold;">⚠️ GeoGebra failed to load</p>
-                    <p style="font-size: 0.9rem; margin-top: 10px;">Please check your internet connection and refresh the page.</p>
-                    <p style="font-size: 0.8rem; margin-top: 5px; color: #666;">This tool requires an active internet connection to load GeoGebra.</p>
-                `;
+                this.showGeoGebraError();
             }
-        }, 15000); // 15 second timeout
+        }, 20000); // 20 second timeout
+    }
+
+    showGeoGebraError() {
+        const loadingMessage = document.getElementById('loading-message');
+        if (loadingMessage) {
+            loadingMessage.innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <p style="color: #dc3545; font-weight: bold; margin-bottom: 15px;">⚠️ GeoGebra Loading Issue</p>
+                    <p style="font-size: 0.9rem; margin-bottom: 10px;">The interactive geometry tool is having trouble loading.</p>
+                    <button onclick="location.reload()" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                        Refresh Page
+                    </button>
+                    <p style="font-size: 0.8rem; margin-top: 10px; color: #666;">
+                        This tool requires an active internet connection and a modern web browser.
+                    </p>
+                </div>
+            `;
+        }
     }
 
     setupGeoGebraEnvironment() {
-        // Set up the coordinate system
-        this.ggbApp.evalCommand('SetActiveView(1)');
-        this.ggbApp.evalCommand('ZoomIn()');
-        
-        // Create a digital ruler
-        this.createDigitalRuler();
-        
-        // Add click listener for triangle selection
-        this.ggbApp.registerClickListener((objName) => {
-            this.handleTriangleClick(objName);
-        });
-        
-        // Add update listener for measurements
-        this.ggbApp.registerUpdateListener((objName) => {
-            this.updateMeasurements();
-        });
+        try {
+            console.log('Setting up GeoGebra environment...');
+            
+            // Set up the coordinate system
+            this.ggbApp.evalCommand('SetActiveView(1)');
+            this.ggbApp.evalCommand('ZoomIn(-5, 5, -5, 5)');
+            
+            // Create a digital ruler
+            this.createDigitalRuler();
+            
+            // Add click listener for triangle selection
+            this.ggbApp.registerClickListener((objName) => {
+                console.log('Object clicked:', objName);
+                this.handleTriangleClick(objName);
+            });
+            
+            // Add update listener for measurements
+            this.ggbApp.registerUpdateListener((objName) => {
+                this.updateMeasurements();
+            });
+            
+            console.log('GeoGebra environment setup complete');
+        } catch (error) {
+            console.error('Error setting up GeoGebra environment:', error);
+            // Continue without these features if they fail
+        }
     }
 
     createDigitalRuler() {
@@ -398,6 +442,9 @@ class TriangleClassifier {
             this.showHint();
         });
 
+        // Add demo mode button for testing without GeoGebra
+        this.addDemoModeButton();
+
         // Setup drag and drop for classification boxes
         this.setupDragAndDrop();
     }
@@ -551,6 +598,62 @@ class TriangleClassifier {
     updateDisplay() {
         document.getElementById('score').textContent = this.score;
         document.getElementById('attempts').textContent = this.attempts;
+    }
+
+    addDemoModeButton() {
+        // Add demo mode for testing
+        const toolsPanel = document.querySelector('.tools-panel');
+        const demoButton = document.createElement('button');
+        demoButton.textContent = 'Demo Mode';
+        demoButton.className = 'btn btn-info';
+        demoButton.style.display = 'none'; // Hidden by default
+        demoButton.onclick = () => this.runDemoMode();
+        toolsPanel.appendChild(demoButton);
+
+        // Show demo button if GeoGebra fails
+        setTimeout(() => {
+            if (!this.ggbApp) {
+                demoButton.style.display = 'inline-block';
+            }
+        }, 25000);
+    }
+
+    runDemoMode() {
+        // Create a demo triangle without GeoGebra
+        this.currentTriangle = {
+            name: 'demo_triangle',
+            counter: 1,
+            type: 'scalene',
+            vertices: [{x: 0, y: 0}, {x: 3, y: 0}, {x: 1, y: 2}]
+        };
+
+        // Set demo measurements
+        document.getElementById('sideA').textContent = '3.00';
+        document.getElementById('sideB').textContent = '2.24';
+        document.getElementById('sideC').textContent = '2.83';
+        document.getElementById('classification').textContent = 'Scalene';
+
+        // Show demo message
+        this.showFeedback('Demo mode active! Try classifying this scalene triangle.', true);
+
+        // Hide GeoGebra container and show demo info
+        const ggbContainer = document.getElementById('ggbApplet');
+        ggbContainer.innerHTML = `
+            <div style="text-align: center; padding: 50px; background: #f8f9fa; border-radius: 10px;">
+                <h3 style="color: #333; margin-bottom: 20px;">📐 Demo Triangle</h3>
+                <div style="font-size: 18px; color: #666; margin-bottom: 15px;">
+                    <strong>Triangle ABC</strong>
+                </div>
+                <div style="font-size: 16px; color: #555; line-height: 1.6;">
+                    Side A: 3.00 units<br>
+                    Side B: 2.24 units<br>
+                    Side C: 2.83 units
+                </div>
+                <p style="margin-top: 20px; font-size: 14px; color: #666;">
+                    All sides are different lengths - this makes it a <strong>Scalene</strong> triangle!
+                </p>
+            </div>
+        `;
     }
 }
 
