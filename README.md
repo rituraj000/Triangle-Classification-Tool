@@ -2,7 +2,7 @@
 
 An interactive educational web application for learning triangle classification using GeoGebra.
 
-🔗 **[Live Demo](https://yourusername.github.io/triangle-classification-tool/)**
+🔗 **[Live Demo](https://rituraj000.github.io/Triangle-Classification-Tool/)**
 
 ## Features
 
