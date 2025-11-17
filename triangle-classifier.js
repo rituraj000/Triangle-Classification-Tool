@@ -38,12 +38,30 @@ class TriangleClassifier {
         applet.setHTML5Codebase('https://cdn.geogebra.org/apps/5.0.609.0/web3d/');
         
         window.ggbOnInit = () => {
+            // Remove loading message
+            const loadingMessage = document.getElementById('loading-message');
+            if (loadingMessage) {
+                loadingMessage.style.display = 'none';
+            }
+            
             this.ggbApp = window.ggbApplet;
             this.setupGeoGebraEnvironment();
             this.createInitialTriangle();
         };
         
         applet.inject('ggbApplet');
+        
+        // Add timeout for GeoGebra loading
+        setTimeout(() => {
+            const loadingMessage = document.getElementById('loading-message');
+            if (loadingMessage && loadingMessage.style.display !== 'none') {
+                loadingMessage.innerHTML = `
+                    <p style="color: #dc3545; font-weight: bold;">⚠️ GeoGebra failed to load</p>
+                    <p style="font-size: 0.9rem; margin-top: 10px;">Please check your internet connection and refresh the page.</p>
+                    <p style="font-size: 0.8rem; margin-top: 5px; color: #666;">This tool requires an active internet connection to load GeoGebra.</p>
+                `;
+            }
+        }, 15000); // 15 second timeout
     }
 
     setupGeoGebraEnvironment() {
