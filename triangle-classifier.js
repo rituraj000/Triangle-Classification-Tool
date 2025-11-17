@@ -19,17 +19,17 @@ class TriangleClassifier {
             "appName": "geometry",
             "width": 600,
             "height": 500,
-            "showToolBar": true,
+            "showToolBar": false,
             "showAlgebraInput": false,
             "showMenuBar": false,
-            "showResetIcon": true,
-            "enableLabelDrags": false,
+            "showResetIcon": false,
+            "enableLabelDrags": true,
             "enableShiftDragZoom": true,
             "enableRightClick": false,
-            "capturingThreshold": null,
             "showToolBarHelp": false,
-            "errorDialogsActive": true,
-            "useBrowserForJS": true
+            "errorDialogsActive": false,
+            "useBrowserForJS": true,
+            "borderColor": "#e0e0e0"
         };
 
         const applet = new GGBApplet(parameters, true);
@@ -84,19 +84,23 @@ class TriangleClassifier {
     }
 
     createDigitalRuler() {
-        // Create a moveable ruler
-        this.ggbApp.evalCommand('ruler = Segment((0, -8), (10, -8))');
-        this.ggbApp.evalCommand('SetColor(ruler, "blue")');
-        this.ggbApp.evalCommand('SetLineThickness(ruler, 5)');
-        this.ggbApp.evalCommand('ShowLabel(ruler, true)');
-        this.ggbApp.evalCommand('SetCaption(ruler, "Ruler: " + Length(ruler))');
-        this.ggbApp.evalCommand('SetVisible(ruler, false)'); // Hidden by default
-        
-        // Add tick marks to the ruler
-        for (let i = 0; i <= 10; i++) {
-            this.ggbApp.evalCommand(`tick${i} = Segment((${i}, -8.2), (${i}, -7.8))`);
-            this.ggbApp.evalCommand(`SetVisible(tick${i}, false)`);
-            this.ggbApp.evalCommand(`SetColor(tick${i}, "blue")`);
+        try {
+            // Create a moveable ruler
+            this.ggbApp.evalCommand('ruler = Segment((0, -8), (10, -8))');
+            this.ggbApp.evalCommand('SetColor(ruler, blue)');
+            this.ggbApp.evalCommand('SetLineThickness(ruler, 5)');
+            this.ggbApp.evalCommand('ShowLabel(ruler, true)');
+            this.ggbApp.evalCommand('SetCaption(ruler, "Ruler")');
+            this.ggbApp.evalCommand('SetVisibility(ruler, false)'); // Hidden by default
+            
+            // Add tick marks to the ruler
+            for (let i = 0; i <= 10; i++) {
+                this.ggbApp.evalCommand(`tick${i} = Segment((${i}, -8.2), (${i}, -7.8))`);
+                this.ggbApp.evalCommand(`SetVisibility(tick${i}, false)`);
+                this.ggbApp.evalCommand(`SetColor(tick${i}, blue)`);
+            }
+        } catch (error) {
+            console.log('Ruler creation failed:', error);
         }
     }
 
@@ -141,26 +145,30 @@ class TriangleClassifier {
         this.ggbApp.evalCommand(`sideB${this.triangleCounter} = Segment(B${this.triangleCounter}, C${this.triangleCounter})`);
         this.ggbApp.evalCommand(`sideC${this.triangleCounter} = Segment(C${this.triangleCounter}, A${this.triangleCounter})`);
         
-        // Style the triangle
-        this.ggbApp.evalCommand(`SetColor(${triangleName}, "red")`);
-        this.ggbApp.evalCommand(`SetFilling(${triangleName}, 0.3)`);
-        this.ggbApp.evalCommand(`SetLineThickness(${triangleName}, 3)`);
-        
-        // Style the sides
-        this.ggbApp.evalCommand(`SetColor(sideA${this.triangleCounter}, "darkred")`);
-        this.ggbApp.evalCommand(`SetColor(sideB${this.triangleCounter}, "darkred")`);
-        this.ggbApp.evalCommand(`SetColor(sideC${this.triangleCounter}, "darkred")`);
-        this.ggbApp.evalCommand(`SetLineThickness(sideA${this.triangleCounter}, 2)`);
-        this.ggbApp.evalCommand(`SetLineThickness(sideB${this.triangleCounter}, 2)`);
-        this.ggbApp.evalCommand(`SetLineThickness(sideC${this.triangleCounter}, 2)`);
-        
-        // Add labels for side lengths
-        this.ggbApp.evalCommand(`SetCaption(sideA${this.triangleCounter}, "a = " + Length(sideA${this.triangleCounter}))`);
-        this.ggbApp.evalCommand(`SetCaption(sideB${this.triangleCounter}, "b = " + Length(sideB${this.triangleCounter}))`);
-        this.ggbApp.evalCommand(`SetCaption(sideC${this.triangleCounter}, "c = " + Length(sideC${this.triangleCounter}))`);
-        this.ggbApp.evalCommand(`ShowLabel(sideA${this.triangleCounter}, true)`);
-        this.ggbApp.evalCommand(`ShowLabel(sideB${this.triangleCounter}, true)`);
-        this.ggbApp.evalCommand(`ShowLabel(sideC${this.triangleCounter}, true)`);
+        try {
+            // Style the triangle
+            this.ggbApp.evalCommand(`SetColor(${triangleName}, red)`);
+            this.ggbApp.evalCommand(`SetFilling(${triangleName}, 0.3)`);
+            this.ggbApp.evalCommand(`SetLineThickness(${triangleName}, 3)`);
+            
+            // Style the sides
+            this.ggbApp.evalCommand(`SetColor(sideA${this.triangleCounter}, red)`);
+            this.ggbApp.evalCommand(`SetColor(sideB${this.triangleCounter}, red)`);
+            this.ggbApp.evalCommand(`SetColor(sideC${this.triangleCounter}, red)`);
+            this.ggbApp.evalCommand(`SetLineThickness(sideA${this.triangleCounter}, 2)`);
+            this.ggbApp.evalCommand(`SetLineThickness(sideB${this.triangleCounter}, 2)`);
+            this.ggbApp.evalCommand(`SetLineThickness(sideC${this.triangleCounter}, 2)`);
+            
+            // Add labels for side lengths
+            this.ggbApp.evalCommand(`SetCaption(sideA${this.triangleCounter}, "Side A")`);
+            this.ggbApp.evalCommand(`SetCaption(sideB${this.triangleCounter}, "Side B")`);
+            this.ggbApp.evalCommand(`SetCaption(sideC${this.triangleCounter}, "Side C")`);
+            this.ggbApp.evalCommand(`ShowLabel(sideA${this.triangleCounter}, true)`);
+            this.ggbApp.evalCommand(`ShowLabel(sideB${this.triangleCounter}, true)`);
+            this.ggbApp.evalCommand(`ShowLabel(sideC${this.triangleCounter}, true)`);
+        } catch (error) {
+            console.log('Triangle styling failed:', error);
+        }
         
         this.currentTriangle = {
             name: triangleName,
@@ -239,10 +247,16 @@ class TriangleClassifier {
     }
 
     setupTriangleDragging() {
-        // Enable dragging for the triangle
+        // Enable dragging for the triangle vertices
         if (this.currentTriangle) {
-            const triangleName = this.currentTriangle.name;
-            this.ggbApp.evalCommand(`SetFixed(${triangleName}, false)`);
+            const counter = this.currentTriangle.counter;
+            try {
+                this.ggbApp.evalCommand(`SetFixed(A${counter}, false)`);
+                this.ggbApp.evalCommand(`SetFixed(B${counter}, false)`);
+                this.ggbApp.evalCommand(`SetFixed(C${counter}, false)`);
+            } catch (error) {
+                console.log('Error setting up triangle dragging:', error);
+            }
         }
     }
 
@@ -310,9 +324,12 @@ class TriangleClassifier {
                 const sideA = this.ggbApp.getValue(`Length(sideA${counter})`);
                 const sideB = this.ggbApp.getValue(`Length(sideB${counter})`);
                 const sideC = this.ggbApp.getValue(`Length(sideC${counter})`);
-                return [sideA.toFixed(2), sideB.toFixed(2), sideC.toFixed(2)];
+                
+                if (sideA && sideB && sideC && !isNaN(sideA) && !isNaN(sideB) && !isNaN(sideC)) {
+                    return [sideA.toFixed(2), sideB.toFixed(2), sideC.toFixed(2)];
+                }
             } catch (error) {
-                return ['--', '--', '--'];
+                console.log('Error getting side lengths:', error);
             }
         }
         return ['--', '--', '--'];
@@ -332,11 +349,15 @@ class TriangleClassifier {
 
     toggleRuler() {
         this.rulerActive = !this.rulerActive;
-        this.ggbApp.evalCommand(`SetVisible(ruler, ${this.rulerActive})`);
-        
-        // Toggle tick marks
-        for (let i = 0; i <= 10; i++) {
-            this.ggbApp.evalCommand(`SetVisible(tick${i}, ${this.rulerActive})`);
+        try {
+            this.ggbApp.evalCommand(`SetVisibility(ruler, ${this.rulerActive})`);
+            
+            // Toggle tick marks
+            for (let i = 0; i <= 10; i++) {
+                this.ggbApp.evalCommand(`SetVisibility(tick${i}, ${this.rulerActive})`);
+            }
+        } catch (error) {
+            console.log('Ruler toggle failed:', error);
         }
         
         const button = document.getElementById('toggleRuler');
@@ -540,11 +561,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Add some utility functions for enhanced interaction
 window.addEventListener('resize', () => {
-    if (window.ggbApplet) {
-        window.ggbApplet.setSize(
-            Math.min(600, window.innerWidth - 40),
-            Math.min(500, window.innerHeight * 0.6)
-        );
+    if (window.ggbApplet && window.ggbApplet.setSize) {
+        try {
+            window.ggbApplet.setSize(
+                Math.min(600, window.innerWidth - 40),
+                Math.min(500, window.innerHeight * 0.6)
+            );
+        } catch (error) {
+            console.log('Resize not supported in this GeoGebra version');
+        }
     }
 });
 
