@@ -35,7 +35,7 @@ class TriangleClassifier {
         const applet = new GGBApplet(parameters, true);
         
         // Set up the applet
-        applet.setHTML5Codebase('https://cdn.geogebra.org/apps/5.0.609.0/web3d/');
+        applet.setHTML5Codebase('https://www.geogebra.org/apps/latest/web3d/');
         
         window.ggbOnInit = () => {
             // Remove loading message
